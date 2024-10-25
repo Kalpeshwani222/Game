@@ -1,6 +1,7 @@
 const express = require("express");
 const createError = require("http-errors");
 require("dotenv").config();
+const cors = require("cors");
 const connectDB = require("./db/db");
 const { VerifyAccessToken } = require("./middlewares/auth.middleware");
 require("./db/init_redis");
@@ -11,7 +12,8 @@ const dashboardRoute = require("./routes/dashboard.routes");
 
 const app = express();
 app.use(express.json());
-
+//cors policy
+app.use(cors());
 //connect to the DB
 connectDB();
 

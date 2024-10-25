@@ -41,9 +41,6 @@ const login = async (req, res, next) => {
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
 
-    console.log(accessToken);
-    console.log(refreshToken);
-
     res.send({ accessToken, refreshToken });
   } catch (error) {
     next(error);

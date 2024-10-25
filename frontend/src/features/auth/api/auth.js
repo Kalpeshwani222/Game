@@ -1,6 +1,14 @@
-// import api from "lib/api-client";
-// import config from "configs/config";
-// import { useMutation } from "@tanstack/react-query";
+import api from "lib/api-client";
+import config from "configs/config";
+
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post("/api/v1/auth/login", credentials);
+    return response.data;
+  } catch (error) {
+    throw error?.response?.data?.error?.message || "Login failed. Please try again.";
+  }
+};
 
 // export const registerUser = async (formData) => {
 //   const response = await api.post(`${config.baseUrl}/api/auth/register`, formData, {
