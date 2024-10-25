@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "routes/*": ["routes/*"],
+      "pages/*": ["pages/*"],
+      "features/*": ["features/*"],
+      "components/*": ["components/*"],
+      "lib/*": ["lib/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
