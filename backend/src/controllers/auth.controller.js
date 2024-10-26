@@ -10,15 +10,16 @@ const client = require("../db/init_redis");
 
 const register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) throw createError.BadRequest();
+    const { email, password, firstName, lastName } = req.body;
+    if (!email || !password || !firstName || !lastName)
+      throw createError.BadRequest();
 
     const alreadyExist = await User.findOne({ email: email });
     if (alreadyExist) {
       throw createError.Conflict(`${email} is already exists`);
     }
 
-    const user = new User({ email, password });
+    const user = new User({ email, password, firstName, lastName });
     const saveUser = await user.save();
     const accessToken = await signAccessToken(saveUser.id);
     const refreshToken = await signRefreshToken(saveUser.id);
@@ -39,9 +40,6 @@ const login = async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
-
-    console.log(accessToken);
-    console.log(refreshToken);
 
     res.send({ accessToken, refreshToken });
   } catch (error) {

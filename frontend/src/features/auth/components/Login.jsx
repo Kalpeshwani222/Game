@@ -4,9 +4,13 @@ import { useForm } from "react-hook-form";
 // import { loginUser } from "../api/auth";
 // import { useMutation } from "@tanstack/react-query";
 import { errorToast, successToast } from "utils/toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../api/auth";
+import { doLogin } from "utils/localStorageOperations";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -14,21 +18,17 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  // const { mutate } = useMutation({
-  //   mutationFn: loginUser,
-  //   onSuccess: ({ data }) => {
-  //     reset();
-  //     successToast("greate");
-  //   },
-
-  //   onError: (error) => {
-  //     errorToast("Something went Wrong!");
-  //   },
-  // });
-
-  const submitHandler = (data) => {
-    // mutate(data);
-    console.log(data);
+  const submitHandler = async (data) => {
+    try {
+      const res = await loginUser(data);
+      successToast("Login Successfully");
+      reset();
+      doLogin(res, () => {
+        navigate("/dashboard");
+      });
+    } catch (err) {
+      errorToast(err);
+    }
   };
   return (
     <>
@@ -56,7 +56,9 @@ const Login = () => {
                 })}
                 error={errors.password?.message}
               />
-              <button className="px-4 py-2 bg-yellow-500 rounded-lg text-white w-full mt-4">Login</button>
+              <button type="submit" className="px-4 py-2 bg-yellow-500 rounded-lg text-white w-full mt-4">
+                Login
+              </button>
             </form>
             <div className="mt-2">
               <span>You haven't an account?</span>

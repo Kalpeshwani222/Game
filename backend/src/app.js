@@ -1,16 +1,19 @@
 const express = require("express");
 const createError = require("http-errors");
 require("dotenv").config();
+const cors = require("cors");
 const connectDB = require("./db/db");
 const { VerifyAccessToken } = require("./middlewares/auth.middleware");
 require("./db/init_redis");
 
 //routes import
 const authRoute = require("./routes/auth.routes");
+const dashboardRoute = require("./routes/dashboard.routes");
 
 const app = express();
 app.use(express.json());
-
+//cors policy
+app.use(cors());
 //connect to the DB
 connectDB();
 
@@ -21,6 +24,7 @@ app.get("/", VerifyAccessToken, async (req, res, next) => {
 });
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/dashboard", dashboardRoute);
 
 //all the route catch this route any of the routes
 // is not defined then handle by this route
