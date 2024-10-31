@@ -1,21 +1,28 @@
 import React from "react";
+import { UserRoundPlus } from "lucide-react";
 
-const UserCard = () => {
+const UserCard = ({ btnClick }) => {
   return (
     <>
-      <div id="list">
-        <div className="p-4 flex justify-between items-center">
-          <div className="flex flex-row gap-x-4">
-            <div className="w-14 rounded-full border border-black">
-              <img className="rounded-full object-cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6tWkfCJfejkeaq78A0p6L5CZWFFVwxyz0DA&s" alt="User-profile" />
+      <div id="list" className="">
+        <div id="list-item" className="p-2 flex justify-between items-center hover:bg-slate-100">
+          <div className="flex flex-row items-center gap-x-2">
+            <div className="bg-slate-200 w-16 h-16 rounded-full border border-black">
+              <img className="object-cover rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6tWkfCJfejkeaq78A0p6L5CZWFFVwxyz0DA&s" alt="user-profile" />
             </div>
-            <div className="">
+            <div>
               <p className="font-medium text-lg">Rushikesh Wani</p>
-              <p>Hometown, area, name-6629 29</p>
+              <p className="text-sm truncate">Hometown, area,</p>
             </div>
           </div>
           <div>
-            <button className="px-4 py-1 rounded-xl font-medium bg-blue-600 text-white">Invite</button>
+            <button
+              onClick={btnClick} // Open modal on click
+              className="flex flex-row items-center justify-center gap-x-1 px-3 py-1 rounded-xl font-medium bg-blue-600 text-white"
+            >
+              <UserRoundPlus />
+              Invite
+            </button>
           </div>
         </div>
         <hr className="border-gray-300"></hr>
