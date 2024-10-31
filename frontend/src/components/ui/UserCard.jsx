@@ -1,7 +1,8 @@
 import React from "react";
 import { UserRoundPlus } from "lucide-react";
 
-const UserCard = ({ btnClick }) => {
+const UserCard = ({ btnClick, info }) => {
+  const { firstName, lastName, email } = info;
   return (
     <>
       <div id="list" className="">
@@ -11,8 +12,10 @@ const UserCard = ({ btnClick }) => {
               <img className="object-cover rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6tWkfCJfejkeaq78A0p6L5CZWFFVwxyz0DA&s" alt="user-profile" />
             </div>
             <div>
-              <p className="font-medium text-lg">Rushikesh Wani</p>
-              <p className="text-sm truncate">Hometown, area,</p>
+              <p className="font-medium text-lg">
+                {firstName} {lastName}
+              </p>
+              <p className="text-sm truncate">{email}</p>
             </div>
           </div>
           <div>
