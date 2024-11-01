@@ -2,6 +2,7 @@ const express = require("express");
 const createError = require("http-errors");
 require("dotenv").config();
 const cors = require("cors");
+const JWT = require("jsonwebtoken");
 const connectDB = require("./db/db");
 const { VerifyAccessToken } = require("./middlewares/auth.middleware");
 require("./db/init_redis");
@@ -47,8 +48,61 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
+});
+
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (!token) {
+    return next(new Error("Authentication error: Token required"));
+  }
+
+  JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
+    if (err) {
+      if (err.name === "JsonWebTokenError") {
+        //  return next(createError.Unauthorized());
+        return next(new Error("Authentication error: Token expired"));
+      } else {
+        // return next(createError.Unauthorized(err.message));
+        return next(new Error("Authentication error: Token expired"));
+      }
+    }
+    //   req.payload = payload;
+    console.log("WOWO", payload.aud);
+
+    socket.userId = payload.aud;
+
+    next();
+  });
+});
+
+app.set("io", io);
+
+io.on("connection", (socket) => {
+  // console.log("A user connected", socket.id);
+  // const userId = socket.handshake.query.userId;
+  console.log("A user connected", socket.id);
+  // const userId = socket.handshake.query.userId;
+  const userId = socket.userId;
+  // Join the user's socket to their unique room based on userId
+  // socket.join(userId);
+
+  if (userId) {
+    socket.join(userId);
+  }
+
+  socket.on("disconnect", () => {
+    socket.leave(userId);
+  });
 });
 
 // const express = require("express");

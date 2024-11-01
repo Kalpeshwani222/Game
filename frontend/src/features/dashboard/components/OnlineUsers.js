@@ -1,27 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { doLogout } from "utils/localStorageOperations";
-import { Modal, UserCard } from "components/ui";
+import { Modal, Notification, UserCard } from "components/ui";
 import { useGetUsers } from "../hooks/useGetUsers";
+import useSocket from "hooks/useSocket";
+import initializeSocket from "utils/socketConn";
+
+const notificationSound = new Audio("/ring.wav");
 
 const OnlineUsers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-
   const { data } = useGetUsers();
 
-  const handleClick = () => {
-    doLogout(() => {
-      navigate("/");
-    });
-  };
   //   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const [selectedUser, setSelectedUser] = useState(null);
+  const [invite, setInvite] = useState(null);
 
   // Open modal with user data or close by setting selectedUser to null
   const handleUserClick = (user) => {
     setSelectedUser(user);
+  };
+
+  useEffect(() => {
+    const socket = initializeSocket();
+    // Listen for the "new-invite" event
+    socket?.on("new-invite", (inviteData) => {
+      console.log("New invite received:", inviteData);
+      setInvite(inviteData);
+      notificationSound.play().catch((error) => {
+        console.error("Error playing notification sound:", error);
+      });
+    });
+
+    // Cleanup on unmount
+    return () => {
+      if (socket) {
+        socket.off("new-invite"); // Remove the listener
+        socket.disconnect();
+      }
+    };
+  }, []);
+
+  const handleAccept = () => {
+    // Handle accept action here (emit an event back)
+    setInvite(null);
+  };
+
+  const handleReject = () => {
+    // Handle reject action here (emit an event back)
+    setInvite(null);
   };
 
   return (
@@ -35,6 +64,7 @@ const OnlineUsers = () => {
           <UserCard key={user._id} btnClick={() => handleUserClick(user)} info={user} />
         ))}
       </div>
+      {invite && <Notification invite={invite} onAccept={handleAccept} onReject={handleReject} />}
 
       {selectedUser && <Modal toggleModal={() => setSelectedUser(null)} userInfo={selectedUser} />}
     </>

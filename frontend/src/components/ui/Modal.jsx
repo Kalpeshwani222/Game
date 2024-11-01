@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CoinsIcon } from "lucide-react";
+import { sendInvitation } from "features/dashboard/apis/send-invitation";
 
 const Modal = ({ toggleModal, userInfo }) => {
   return (
@@ -31,7 +32,9 @@ const Modal = ({ toggleModal, userInfo }) => {
           >
             Cancel
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md">Send Invite</button>
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-md" onClick={() => sendInvitation(userInfo._id, 500)}>
+            Send Invite
+          </button>
         </div>
       </div>
     </div>

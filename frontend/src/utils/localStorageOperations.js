@@ -33,7 +33,7 @@ export const doLogout = (next) => {
 //get current user
 export const getCurrentUserDetails = () => {
   if (isLoggedIn()) {
-    return JSON.parse(Cookies.get("access-token"));
+    return JSON.parse(Cookies.get("accessToken"));
   } else {
     return false;
   }
