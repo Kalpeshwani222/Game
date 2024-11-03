@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "match",
+        path: "match/:gameId",
         element: (
           <ProtectedRoute>
             <Match />

@@ -32,7 +32,13 @@ const Modal = ({ toggleModal, userInfo }) => {
           >
             Cancel
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md" onClick={() => sendInvitation(userInfo._id, 500)}>
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            onClick={() => {
+              sendInvitation(userInfo._id, 500);
+              toggleModal();
+            }}
+          >
             Send Invite
           </button>
         </div>

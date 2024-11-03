@@ -5,6 +5,7 @@ import { Modal, Notification, UserCard } from "components/ui";
 import { useGetUsers } from "../hooks/useGetUsers";
 import useSocket from "hooks/useSocket";
 import initializeSocket from "utils/socketConn";
+import { acceptInvitation } from "../apis/accept-invite";
 
 const notificationSound = new Audio("/ring.wav");
 
@@ -34,6 +35,14 @@ const OnlineUsers = () => {
       });
     });
 
+    //listen for the start game event
+    socket?.on("start-game", (data) => {
+      console.log("Game starting:", data);
+      // Navigate to game screen or set up game board as needed
+      // navigate(`/game?opponentId=${opponentId}&coins=${totalCoins}`);
+      navigate(`/match/${data.gameId}`);
+    });
+
     // Cleanup on unmount
     return () => {
       if (socket) {
@@ -43,8 +52,10 @@ const OnlineUsers = () => {
     };
   }, []);
 
-  const handleAccept = () => {
+  const handleAccept = (inviteID) => {
     // Handle accept action here (emit an event back)
+    acceptInvitation(inviteID);
+
     setInvite(null);
   };
 
@@ -64,7 +75,7 @@ const OnlineUsers = () => {
           <UserCard key={user._id} btnClick={() => handleUserClick(user)} info={user} />
         ))}
       </div>
-      {invite && <Notification invite={invite} onAccept={handleAccept} onReject={handleReject} />}
+      {invite && <Notification invite={invite} onAccept={() => handleAccept(invite?.inviteId)} onReject={handleReject} />}
 
       {selectedUser && <Modal toggleModal={() => setSelectedUser(null)} userInfo={selectedUser} />}
     </>

@@ -24,6 +24,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+
+  coins: {
+    type: Number,
+    default: 0,
+  },
 });
 
 //middlware run before save the password to hash it
